@@ -3,7 +3,6 @@
   const cw1 = document.getElementById("cw1");
   const cw2 = document.getElementById("cw2");
   const cw3 = document.getElementById("cw3");
-  const cw4 = document.getElementById("cw4");
   const answer = document.getElementById("answer");
 
   example.addEventListener("click", function () {
@@ -16,49 +15,6 @@
   });
 
   cw1.addEventListener("click", function () {
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((array) => {
-        console.log(array);
-        let html = "<ul>";
-        array.forEach((post) => {
-          html += `<li><strong>${post.title}</strong><p>${post.body}</p></li>`;
-        });
-        html += "</ul>";
-        answer.innerHTML = html;
-      })
-      .catch((error) => {
-        console.error("Błąd:", error);
-        answer.innerHTML = "Wystąpił błąd podczas pobierania danych.";
-      });
-  });
-
-  cw2.addEventListener("click", function () {
-    answer.innerHTML = "Loading...";
-
-    setTimeout(() => {
-      fetch("https://jsonplaceholder.typicode.com/posts", {
-        method: "GET",
-      })
-        .then((response) => response.json())
-        .then((array) => {
-          let html = "<ul>";
-          array.forEach((post) => {
-            html += `<li><strong>${post.title}</strong><p>${post.body}</p></li>`;
-          });
-          html += "</ul>";
-          answer.innerHTML = html;
-        })
-        .catch((error) => {
-          console.error("Błąd:", error);
-          answer.innerHTML = "Wystąpił błąd podczas pobierania danych.";
-        });
-    }, 1000);
-  });
-
-  cw3.addEventListener("click", function () {
     answer.innerHTML = `
       <label for="dynamicPostId">Wybierz ID posta (1-10): </label>
       <select id="dynamicPostId">
@@ -91,7 +47,12 @@
           .then((response) => response.json())
           .then((post) => {
             console.log(post);
-            postResult.innerHTML = `<div><strong>${post.title}</strong><p>${post.body}</p></div>`;
+            postResult.innerHTML = `
+              <div class="post-item">
+                <h3>${post.title}</h3>
+                <p>${post.body}</p>
+              </div>
+            `;
           })
           .catch((error) => {
             console.error("Błąd:", error);
@@ -100,7 +61,7 @@
       });
   });
 
-  cw4.addEventListener("click", function () {
+  cw2.addEventListener("click", function () {
     answer.innerHTML = "Processing...";
 
     const newPost = {
@@ -125,5 +86,9 @@
         console.error("Błąd:", error);
         answer.innerHTML = "Wystąpił błąd podczas dodawania posta.";
       });
+  });
+
+  cw3.addEventListener("click", function () {
+    //TODO
   });
 })();
