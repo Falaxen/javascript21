@@ -1,0 +1,129 @@
+(function () {
+  const example = document.getElementById("example");
+  const cw1 = document.getElementById("cw1");
+  const cw2 = document.getElementById("cw2");
+  const cw3 = document.getElementById("cw3");
+  const cw4 = document.getElementById("cw4");
+  const answer = document.getElementById("answer");
+
+  example.addEventListener("click", function () {
+    fetch("https://jsonplaceholder.typicode.com/posts")
+      .then((response) => response.json())
+      .then((array) => {
+        console.log(array);
+        answer.innerHTML = JSON.stringify(array);
+      });
+  });
+
+  cw1.addEventListener("click", function () {
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((array) => {
+        console.log(array);
+        let html = "<ul>";
+        array.forEach((post) => {
+          html += `<li><strong>${post.title}</strong><p>${post.body}</p></li>`;
+        });
+        html += "</ul>";
+        answer.innerHTML = html;
+      })
+      .catch((error) => {
+        console.error("Błąd:", error);
+        answer.innerHTML = "Wystąpił błąd podczas pobierania danych.";
+      });
+  });
+
+  cw2.addEventListener("click", function () {
+    answer.innerHTML = "Loading...";
+
+    setTimeout(() => {
+      fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((array) => {
+          let html = "<ul>";
+          array.forEach((post) => {
+            html += `<li><strong>${post.title}</strong><p>${post.body}</p></li>`;
+          });
+          html += "</ul>";
+          answer.innerHTML = html;
+        })
+        .catch((error) => {
+          console.error("Błąd:", error);
+          answer.innerHTML = "Wystąpił błąd podczas pobierania danych.";
+        });
+    }, 1000);
+  });
+
+  cw3.addEventListener("click", function () {
+    answer.innerHTML = `
+      <label for="dynamicPostId">Wybierz ID posta (1-10): </label>
+      <select id="dynamicPostId">
+        <option value="" disabled selected>-- Wybierz post --</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+      <div id="postResult" style="margin-top: 15px;"></div>
+    `;
+
+    document
+      .getElementById("dynamicPostId")
+      .addEventListener("change", function () {
+        const postId = this.value;
+        const postResult = document.getElementById("postResult");
+
+        postResult.innerHTML = "Ładowanie...";
+
+        fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then((post) => {
+            console.log(post);
+            postResult.innerHTML = `<div><strong>${post.title}</strong><p>${post.body}</p></div>`;
+          })
+          .catch((error) => {
+            console.error("Błąd:", error);
+            postResult.innerHTML = "Wystąpił błąd podczas pobierania posta.";
+          });
+      });
+  });
+
+  cw4.addEventListener("click", function () {
+    answer.innerHTML = "Processing...";
+
+    const newPost = {
+      title: "Tytuł nowego posta",
+      body: "To jest treść nowo tworzonego posta wysłanego metodą POST.",
+      userId: 1,
+    };
+
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      body: JSON.stringify(newPost),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        answer.innerHTML = `Dodano nowy post o ID = ${data.id}`;
+      })
+      .catch((error) => {
+        console.error("Błąd:", error);
+        answer.innerHTML = "Wystąpił błąd podczas dodawania posta.";
+      });
+  });
+})();
